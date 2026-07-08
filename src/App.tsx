@@ -24,6 +24,7 @@ import Doomscroll from './apps/Doomscroll'
 import Settings from './apps/Settings'
 import Guide from './apps/Guide'
 import FileManager from './apps/FileManager'
+import Store from './apps/Store'
 
 const APP_COMPONENTS: Record<string, React.FC> = {
   about: AboutMe,
@@ -37,6 +38,7 @@ const APP_COMPONENTS: Record<string, React.FC> = {
   settings: Settings,
   guide: Guide,
   files: FileManager,
+  store: Store,
 }
 
 type BootPhase = 'waiting' | 'topbar' | 'desktop' | 'dock' | 'done'
