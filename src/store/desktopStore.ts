@@ -175,8 +175,6 @@ export const useDesktopStore = create<DesktopStore>((set, get) => ({
   })),
 
   uninstallStoreApp: (appId) => set(state => {
-    // Close any open windows for this app
-    const windowsToClose = state.windows.filter(w => w.appId === appId)
     const remainingWindows = state.windows.filter(w => w.appId !== appId)
     return {
       installedStoreApps: state.installedStoreApps.filter(id => id !== appId),

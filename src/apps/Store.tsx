@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { useDesktopStore } from '../store/desktopStore'
 
 type AppCategory = 'all' | 'productivity' | 'creative' | 'games' | 'utilities'
@@ -141,7 +141,6 @@ export default function Store() {
     return matchCategory && matchSearch
   })
 
-  const coreCount = storeApps.filter(a => !a.installable && !a.unavailable).length
   const installedCount = storeApps.filter(a => (!a.installable && !a.unavailable) || isInstalled(a.id)).length
 
   return (
