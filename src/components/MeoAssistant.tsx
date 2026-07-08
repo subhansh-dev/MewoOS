@@ -584,11 +584,11 @@ export default function MeoAssistant() {
     return 'default'
   }
 
-  const speakWithGemini = useCallback(async (text: string, emotion: Emotion) => {
+  const speakWithGemini = useCallback(async (text: string, emotion: Emotion, onReady?: () => void) => {
     const key = (apiKey || localStorage.getItem('mewo-gemini-key') || '').trim()
     if (!key) {
       console.log('[Meo] No API key, using browser TTS')
-      speakWithBrowser(text, emotion)
+      speakWithBrowser(text, emotion, onReady)
       return
     }
 
@@ -622,7 +622,7 @@ export default function MeoAssistant() {
         const errBody = await res.json().catch(() => null)
         console.error('[Meo] TTS error:', res.status, errBody)
         console.log('[Meo] Falling back to browser TTS')
-        speakWithBrowser(text, emotion)
+        speakWithBrowser(text, emotion, onReady)
         return
       }
 
@@ -680,18 +680,19 @@ export default function MeoAssistant() {
           audioCtx.close()
         }
 
+        onReady?.()
         source.start()
       } else {
         console.log('[Meo] No audio data in response, falling back to browser TTS')
-        speakWithBrowser(text, emotion)
+        speakWithBrowser(text, emotion, onReady)
       }
     } catch (err) {
       console.error('[Meo] TTS failed:', err)
-      speakWithBrowser(text, emotion)
+      speakWithBrowser(text, emotion, onReady)
     }
   }, [apiKey, currentEmotion])
 
-  const speakWithBrowser = useCallback((text: string, emotion: Emotion) => {
+  const speakWithBrowser = useCallback((text: string, emotion: Emotion, onReady?: () => void) => {
     const synth = window.speechSynthesis
     if (!synth) return
     synth.cancel()
@@ -709,7 +710,7 @@ export default function MeoAssistant() {
       || enVoices.find(v => v.lang.startsWith('en'))
     if (preferred) utterance.voice = preferred
 
-    utterance.onstart = () => { setPhase('speaking'); setSpeakingText(text) }
+    utterance.onstart = () => { setPhase('speaking'); setSpeakingText(text); onReady?.() }
     utterance.onend = () => { setPhase('idle'); setSpeakingText(''); setWaveformData(new Array(32).fill(0)); setAudioAmplitude(0) }
 
     synth.speak(utterance)
@@ -736,8 +737,9 @@ export default function MeoAssistant() {
     }
 
     setCurrentEmotion(emotion)
-    setMessages(prev => [...prev, { role: 'assistant', text: cleanText, emotion }])
-    speakWithGemini(cleanText, emotion)
+    speakWithGemini(cleanText, emotion, () => {
+      setMessages(prev => [...prev, { role: 'assistant', text: cleanText, emotion }])
+    })
   }
 
   const executeAction = (action: string, target: string) => {

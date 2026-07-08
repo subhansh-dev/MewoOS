@@ -19,6 +19,12 @@ const APP_SHADOW_COLORS: Record<string, string> = {
   doomscroll: 'rgba(253,186,116,0.12)',
   files: 'rgba(147,197,253,0.12)',
   settings: 'rgba(155,136,158,0.10)',
+  weather: 'rgba(147,197,253,0.12)',
+  kanban: 'rgba(134,239,172,0.10)',
+  timer: 'rgba(253,186,116,0.12)',
+  'typing-speed': 'rgba(196,181,253,0.12)',
+  'paint-studio': 'rgba(134,239,172,0.12)',
+  'image-editor': 'rgba(232,130,155,0.12)',
 }
 
 export default function Window({ window: win, children }: WindowProps) {

@@ -26,6 +26,7 @@ interface DesktopStore {
   dockHovered: string | null
   currentWorkspace: number
   maxWorkspaces: number
+  installedStoreApps: string[]
 
   setBootDone: (done: boolean) => void
   openWindow: (appId: string, title: string, width?: number, height?: number, origin?: { x: number; y: number }) => void
@@ -39,6 +40,9 @@ interface DesktopStore {
   switchWorkspace: (num: number) => void
   moveToWorkspace: (id: string, workspace: number) => void
   getWorkspaceWindows: (workspace: number) => WindowState[]
+  installStoreApp: (appId: string) => void
+  uninstallStoreApp: (appId: string) => void
+  isStoreAppInstalled: (appId: string) => boolean
 }
 
 export const useDesktopStore = create<DesktopStore>((set, get) => ({
@@ -50,6 +54,7 @@ export const useDesktopStore = create<DesktopStore>((set, get) => ({
   dockHovered: null,
   currentWorkspace: 1,
   maxWorkspaces: MAX_WORKSPACES,
+  installedStoreApps: [],
 
   setBootDone: (done) => set({ bootDone: done }),
 
@@ -162,6 +167,26 @@ export const useDesktopStore = create<DesktopStore>((set, get) => ({
   getWorkspaceWindows: (workspace) => {
     return get().windows.filter(w => w.workspace === workspace)
   },
+
+  installStoreApp: (appId) => set(state => ({
+    installedStoreApps: state.installedStoreApps.includes(appId)
+      ? state.installedStoreApps
+      : [...state.installedStoreApps, appId]
+  })),
+
+  uninstallStoreApp: (appId) => set(state => {
+    // Close any open windows for this app
+    const windowsToClose = state.windows.filter(w => w.appId === appId)
+    const remainingWindows = state.windows.filter(w => w.appId !== appId)
+    return {
+      installedStoreApps: state.installedStoreApps.filter(id => id !== appId),
+      windows: remainingWindows,
+      openApps: state.openApps.filter(id => id !== appId),
+      activeWindowId: remainingWindows.length ? remainingWindows[remainingWindows.length - 1].id : null,
+    }
+  }),
+
+  isStoreAppInstalled: (appId) => get().installedStoreApps.includes(appId),
 }))
 
 // Notification store
