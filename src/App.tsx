@@ -12,6 +12,7 @@ import LockScreen from './components/LockScreen'
 import SearchBar from './components/SearchBar'
 import Widgets from './components/Widgets'
 import MeoAssistant from './components/MeoAssistant'
+import WindowSwitcher from './components/WindowSwitcher'
 import { useFileSystem } from './store/fileSystem'
 import AboutMe from './apps/AboutMe'
 import Terminal from './apps/Terminal'
@@ -202,6 +203,7 @@ export default function App() {
           <LockScreen />
           <Widgets />
           <MeoAssistant />
+          <WindowSwitcher />
 
           {/* Guide hint */}
           <AnimatePresence>
