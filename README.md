@@ -4,7 +4,7 @@
 
 **A web-based desktop environment that runs in your browser**
 
-Built for the [Hack Club Stardance](https://hackclub.com) WebOS Jam
+Built for the [Hack Club Stardance](https://hackclub.com) and [Hack Club Beest](https://hackclub.com) WebOS Jam
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
