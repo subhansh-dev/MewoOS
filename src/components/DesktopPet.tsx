@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useState } from 'react'
 
 const P: Record<number, string> = {
   0: 'transparent',
@@ -373,8 +373,11 @@ export default function DesktopPet() {
     return () => {
       cancelAnimationFrame(frame)
       window.removeEventListener('mousemove', onMove)
+      if (moodTimer.current) clearTimeout(moodTimer.current)
     }
   }, [renderFrame])
+
+  const moodTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
@@ -392,7 +395,8 @@ export default function DesktopPet() {
       lastMouseMove.current = Date.now()
     }
     mood.current = 'happy'
-    setTimeout(() => { mood.current = 'idle' }, 1500)
+    if (moodTimer.current) clearTimeout(moodTimer.current)
+    moodTimer.current = setTimeout(() => { mood.current = 'idle' }, 1500)
     try { (window as any).__mewoPlayClick?.('click') } catch {}
   }, [])
 

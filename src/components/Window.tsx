@@ -62,7 +62,7 @@ export default function Window({ window: win, children }: WindowProps) {
     const onMove = (e: MouseEvent) => {
       velocity.current = { x: e.clientX - lastPos.current.x, y: e.clientY - lastPos.current.y }
       lastPos.current = { x: e.clientX, y: e.clientY }
-      const newX = e.clientX - dragOffset.current.x
+      const newX = Math.max(0, Math.min(window.innerWidth - 100, e.clientX - dragOffset.current.x))
       const newY = Math.max(32, e.clientY - dragOffset.current.y)
       dragPos.current = { x: newX, y: newY }
       el.style.left = newX + 'px'
