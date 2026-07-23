@@ -19,8 +19,21 @@ export default function WindowSwitcher() {
 
   const visibleWindows = windows.filter(w => w.workspace === currentWorkspace && !w.minimized)
 
+  // Listen for external open trigger (from top bar button)
+  useEffect(() => {
+    const handler = () => {
+      if (visibleWindows.length > 1) {
+        setActive(true)
+        setSelectedIdx(0)
+      }
+    }
+    window.addEventListener('mewo-switch-windows', handler)
+    return () => window.removeEventListener('mewo-switch-windows', handler)
+  }, [visibleWindows.length])
+
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Alt' && !e.repeat) {
+    // Ctrl+Shift+A to open, Tab to cycle
+    if (e.ctrlKey && e.shiftKey && e.key === 'A') {
       e.preventDefault()
       if (visibleWindows.length > 1) {
         setActive(true)
@@ -32,10 +45,15 @@ export default function WindowSwitcher() {
       const dir = e.shiftKey ? -1 : 1
       setSelectedIdx(i => (i + dir + visibleWindows.length) % visibleWindows.length)
     }
+    if (active && e.key === 'Escape') {
+      e.preventDefault()
+      setActive(false)
+      setSelectedIdx(0)
+    }
   }, [active, visibleWindows.length])
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Alt' && active) {
+    if (e.key === 'Shift' && active) {
       e.preventDefault()
       const win = visibleWindows[selectedIdx]
       if (win) focusWindow(win.id)

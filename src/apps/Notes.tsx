@@ -6,13 +6,20 @@ export default function Notes() {
   })
   const [saved, setSaved] = useState(false)
   const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const debounceTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
-    localStorage.setItem('mewoos-notes', text)
-    setSaved(true)
-    if (saveTimer.current) clearTimeout(saveTimer.current)
-    saveTimer.current = setTimeout(() => setSaved(false), 1500)
-    return () => { if (saveTimer.current) clearTimeout(saveTimer.current) }
+    if (debounceTimer.current) clearTimeout(debounceTimer.current)
+    debounceTimer.current = setTimeout(() => {
+      localStorage.setItem('mewoos-notes', text)
+      setSaved(true)
+      if (saveTimer.current) clearTimeout(saveTimer.current)
+      saveTimer.current = setTimeout(() => setSaved(false), 1500)
+    }, 400)
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current)
+      if (saveTimer.current) clearTimeout(saveTimer.current)
+    }
   }, [text])
 
   const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0

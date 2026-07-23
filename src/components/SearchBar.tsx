@@ -13,6 +13,14 @@ const APPS = [
   { id: 'doomscroll', title: 'Doomscroll', kw: 'doomscroll reels tiktok', icon: '📱' },
   { id: 'guide', title: 'Guide', kw: 'guide help features', icon: '📖' },
   { id: 'settings', title: 'Settings', kw: 'settings preferences accent', icon: '⚙️' },
+  { id: 'files', title: 'Files', kw: 'files file manager explorer folders', icon: '📁' },
+  { id: 'store', title: 'App Store', kw: 'store apps install', icon: '🛒' },
+  { id: 'weather', title: 'Weather', kw: 'weather forecast temperature', icon: '🌤' },
+  { id: 'kanban', title: 'Kanban', kw: 'kanban board tasks', icon: '📋' },
+  { id: 'timer', title: 'Timer', kw: 'timer stopwatch countdown', icon: '⏱' },
+  { id: 'typing-speed', title: 'Typing Speed', kw: 'typing speed wpm test', icon: '⌨' },
+  { id: 'paint-studio', title: 'Paint', kw: 'paint draw art canvas', icon: '🎨' },
+  { id: 'image-editor', title: 'Image Editor', kw: 'image editor photo', icon: '🖼' },
 ]
 
 export default function SearchBar() {

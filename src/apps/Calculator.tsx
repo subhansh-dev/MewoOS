@@ -21,7 +21,7 @@ export default function Calculator() {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  })
+  }, [display, prev, op, fresh])
 
   const handleNum = (n: string) => {
     if (fresh) {

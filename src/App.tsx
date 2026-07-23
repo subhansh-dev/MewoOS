@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useDesktopStore } from './store/desktopStore'
 import BootScreen from './components/BootScreen'
@@ -13,22 +13,32 @@ import SearchBar from './components/SearchBar'
 import Widgets from './components/Widgets'
 import MeoAssistant from './components/MeoAssistant'
 import WindowSwitcher from './components/WindowSwitcher'
+import ErrorBoundary from './components/ErrorBoundary'
 import { useFileSystem } from './store/fileSystem'
-import AboutMe from './apps/AboutMe'
-import Terminal from './apps/Terminal'
-import Notes from './apps/Notes'
-import Calculator from './apps/Calculator'
-import MusicPlayer from './apps/MusicPlayer'
-import Gallery from './apps/Gallery'
-import Browser from './apps/Browser'
-import Doomscroll from './apps/Doomscroll'
-import Settings from './apps/Settings'
-import Guide from './apps/Guide'
-import FileManager from './apps/FileManager'
-import Store from './apps/Store'
-import { WeatherApp, KanbanApp, TimerApp, TypingSpeedApp, PaintApp, ImageEditorApp } from './apps/StoreApps'
 
-const APP_COMPONENTS: Record<string, React.FC> = {
+const AboutMe = lazy(() => import('./apps/AboutMe'))
+const Terminal = lazy(() => import('./apps/Terminal'))
+const Notes = lazy(() => import('./apps/Notes'))
+const Calculator = lazy(() => import('./apps/Calculator'))
+const MusicPlayer = lazy(() => import('./apps/MusicPlayer'))
+const Gallery = lazy(() => import('./apps/Gallery'))
+const Browser = lazy(() => import('./apps/Browser'))
+const Doomscroll = lazy(() => import('./apps/Doomscroll'))
+const Settings = lazy(() => import('./apps/Settings'))
+const Guide = lazy(() => import('./apps/Guide'))
+const FileManager = lazy(() => import('./apps/FileManager'))
+const Store = lazy(() => import('./apps/Store'))
+
+const STORE_APPS: Record<string, React.LazyExoticComponent<React.FC>> = {
+  weather: lazy(() => import('./apps/StoreApps').then(m => ({ default: m.WeatherApp }))),
+  kanban: lazy(() => import('./apps/StoreApps').then(m => ({ default: m.KanbanApp }))),
+  timer: lazy(() => import('./apps/StoreApps').then(m => ({ default: m.TimerApp }))),
+  'typing-speed': lazy(() => import('./apps/StoreApps').then(m => ({ default: m.TypingSpeedApp }))),
+  'paint-studio': lazy(() => import('./apps/StoreApps').then(m => ({ default: m.PaintApp }))),
+  'image-editor': lazy(() => import('./apps/StoreApps').then(m => ({ default: m.ImageEditorApp }))),
+}
+
+const APP_COMPONENTS: Record<string, React.LazyExoticComponent<React.FC>> = {
   about: AboutMe,
   terminal: Terminal,
   notes: Notes,
@@ -41,12 +51,7 @@ const APP_COMPONENTS: Record<string, React.FC> = {
   guide: Guide,
   files: FileManager,
   store: Store,
-  weather: WeatherApp,
-  kanban: KanbanApp,
-  timer: TimerApp,
-  'typing-speed': TypingSpeedApp,
-  'paint-studio': PaintApp,
-  'image-editor': ImageEditorApp,
+  ...STORE_APPS,
 }
 
 type BootPhase = 'waiting' | 'topbar' | 'desktop' | 'dock' | 'done'
@@ -183,7 +188,11 @@ export default function App() {
               if (!AppComponent) return null
               return (
                 <Window key={win.id} window={win}>
-                  <AppComponent />
+                  <ErrorBoundary>
+                    <Suspense fallback={null}>
+                      <AppComponent />
+                    </Suspense>
+                  </ErrorBoundary>
                 </Window>
               )
             })}

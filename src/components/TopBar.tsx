@@ -101,6 +101,25 @@ export default function TopBar() {
       </div>
 
       <div className="top-bar-right">
+        {/* Window switcher button */}
+        {windows.filter(w => w.workspace === currentWorkspace && !w.minimized).length > 1 && (
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('mewo-switch-windows'))}
+            title="Switch windows"
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: 28, height: 20, borderRadius: 6, border: 'none', padding: 0,
+              background: 'rgba(255,255,255,0.04)', cursor: 'pointer',
+              color: 'rgba(255,255,255,0.4)', fontSize: 11, marginRight: 8,
+              transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = 'rgba(255,255,255,0.4)' }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="3" width="8" height="8" rx="1"/><rect x="14" y="3" width="8" height="8" rx="1"/><rect x="2" y="13" width="8" height="8" rx="1"/><rect x="14" y="13" width="8" height="8" rx="1"/></svg>
+          </button>
+        )}
+
         {/* Workspace indicator */}
         <div style={{ display: 'flex', gap: 5, alignItems: 'center', marginRight: 12, padding: '0 4px' }}>
           {Array.from({ length: maxWorkspaces }, (_, i) => i + 1).map(ws => {

@@ -28,4 +28,9 @@ public/audio/
 public/video/
 public/reels/
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
 .vercel
